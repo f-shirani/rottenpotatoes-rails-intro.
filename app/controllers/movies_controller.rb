@@ -7,7 +7,18 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
+       
+    # part1: 
+     @all_ratings = ['G','PG','PG-13','R']
+    if params[:ratings].nil?
+      @movies = Movie.order params[:order]
+    else
+      # filter movies based on ratings
+      array_ratings = params[:ratings].keys
+      @chosen_ratings = array_ratings
+      @movies = Movie.where(rating: array_ratings).order params[:order]
+    end
+
   end
 
   def new
