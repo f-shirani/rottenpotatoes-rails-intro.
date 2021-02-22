@@ -19,11 +19,10 @@ class MoviesController < ApplicationController
     session[:sort] = params[:sort] unless params[:sort].nil?
 
     
-    #apply settings from session when the incoming URI doesn’t have params but have session
+    #apply settings from session when the incoming URI doesn’t have params
     
     if (params[:ratings].nil? && session[:ratings].nil?)
-      @ratings_to_show = Movie.all_ratings
-      @movies = Movie.with_ratings(@ratings_to_show, session[:sort])
+      @movies = Movie.with_ratings(Movie.all_ratings, session[:sort])
       session[:ratings] = params[:rating]
       
     elsif (params[:ratings].nil? && !session[:ratings].nil?) || (params[:sort].nil? && !session[:sort].nil?)
@@ -39,13 +38,10 @@ class MoviesController < ApplicationController
       if params[:sort] == 'title'
         @sort_by =  params[:sort]
         @highlight = 'title'
-      elsif  params[:sort]=='release_date'
+      elsif params[:sort]=='release_date'
         @sort_by =  params[:sort]
         @highlight = 'release_date'
-      else
-        @sort_by = ""
-        @ratings_to_show = ratings
-        @highlight = nil
+        
       end
       
       @ratings_to_show = ratings
