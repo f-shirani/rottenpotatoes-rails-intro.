@@ -7,36 +7,31 @@ class MoviesController < ApplicationController
   end
 
   def index
-    array_ratings = params[:ratings]
+    ratings = params[:ratings]
     @all_ratings = Movie.all_ratings
     
-    if (request.referrer).nil?
-      session.clear
-    end
-
-
     # Remember the sorting and filtering settings
     
     session[:ratings] = params[:ratings] unless params[:ratings].nil?
     session[:sort] = params[:sort] unless params[:sort].nil?
-    sort_by = params[:sort]
 
-    # apply settings from session when the incoming URI doesn’t have params
-    if ((params[:ratings].nil? && !session[:ratings].nil?) || (params[:order].nil? && !session[:order].nil?))
+    sort_by = params[:sort]
+    
+    #apply settings from session when the incoming URI doesn’t have params
+    if (params[:ratings].nil? and params[:commit]=="Refresh")
       @ratings_to_show = Movie.all_ratings
       @movies = Movie.with_ratings(@ratings_to_show, session[:sort])
       session[:ratings] = params[:rating]
-
-
+      
     #when URI has params, the new settings should be remembered in the session.
     elsif (params[:ratings].nil? && !session[:ratings].nil?) || (params[:sort].nil? && !session[:sort].nil?)
       redirect_to movies_path("ratings" => session[:ratings], "sort" => session[:sort])
     
     else
       if !params[:ratings].nil?
-        array_ratings  = params[:ratings].keys
+        ratings = params[:ratings].keys
       else
-        array_ratings  = @all_ratings
+        ratings = @all_ratings
       end
       if sort_by == 'title'
         @sort_by = sort_by
@@ -46,17 +41,19 @@ class MoviesController < ApplicationController
         @highlight = 'release_date'
       else
         @sort_by = ""
-        @ratings_to_show = array_ratings  
+        @ratings_to_show = ratings
         @highlight = nil
       end
       
-      @ratings_to_show = array_ratings  
+      @ratings_to_show = ratings
       @movies = Movie.with_ratings(@ratings_to_show, @sort_by)
+    
+      
     end
-  
+    
+    
   end
-  
-  
+
   def new
     # default: render 'new' template
   end
