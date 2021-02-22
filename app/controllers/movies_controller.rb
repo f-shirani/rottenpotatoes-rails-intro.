@@ -17,11 +17,11 @@ class MoviesController < ApplicationController
     #   @movies = Movie.order params[:order]
     # else
     #   # filter movies based on ratings
-    #   array_ratings = params[:ratings].keys
+    #   ratings = params[:ratings].keys
     #   @chosen_ratings = array_ratings
     #   @movies = Movie.where(rating: array_ratings).order params[:order]
     
-    array_ratings = params[:ratings]
+    ratings = params[:ratings]
     @all_ratings = Movie.all_ratings
     
     # Remember the sorting and filtering settings
@@ -29,10 +29,10 @@ class MoviesController < ApplicationController
     session[:ratings] = params[:ratings] unless params[:ratings].nil?
     session[:sort] = params[:sort] unless params[:sort].nil?
 
-    sort_by = params[:sort]
+  
     
     #apply settings from session when the incoming URI doesn’t have params
-    if (params[:ratings].nil? and params[:commit]=="Refresh")
+    if ((params[:ratings].nil? && !session[:ratings].nil?) || (params[:order].nil? && !session[:order].nil?))
       @ratings_to_show = Movie.all_ratings
       @movies = Movie.with_ratings(@ratings_to_show, session[:sort])
       session[:ratings] = params[:rating]
@@ -43,28 +43,26 @@ class MoviesController < ApplicationController
     
     else
       if !params[:ratings].nil?
-        array_ratings = params[:ratings].keys
+        ratings = params[:ratings].keys
       else
-        array_ratings = @all_ratings
+        ratings = @all_ratings
       end
-      if sort_by == 'title'
-        @sort_by = sort_by
-        @highlight = 'title'
-      elsif sort_by=='release_date'
-        @sort_by = sort_by
-        @highlight = 'release_date'
+      if params[:sort] == 'title'
+         @sort_by =  params[:sort]
+         @highlight = 'title'
+      elsif  params[:sort]=='release_date'
+         @sort_by =  params[:sort]
+         @highlight = 'release_date'
       else
-        @sort_by = ""
-        @ratings_to_show = array_ratings
-        @highlight = nil
+         @sort_by = ""
+         @ratings_to_show = ratings
+         @highlight = nil
       end
       
-      @ratings_to_show = array_ratings
+      @ratings_to_show = ratings
       @movies = Movie.with_ratings(@ratings_to_show, @sort_by)
-    
       
     end
-    
     
   end
 
