@@ -10,17 +10,6 @@ class MoviesController < ApplicationController
     # part1: sort the list of movies based on parameter
     # @movies = Movie.order(params[:order])
     
-    
-    # part2: 
-    # @all_ratings = ['G','PG','PG-13','R']
-    # if params[:ratings].nil?
-    #   @movies = Movie.order params[:order]
-    # else
-    #   # filter movies based on ratings
-    #   ratings = params[:ratings].keys
-    #   @chosen_ratings = array_ratings
-    #   @movies = Movie.where(rating: array_ratings).order params[:order]
-    
     ratings = params[:ratings]
     @all_ratings = Movie.all_ratings
     
@@ -32,7 +21,7 @@ class MoviesController < ApplicationController
   
     
     #apply settings from session when the incoming URI doesn’t have params
-    if ((params[:ratings].nil? && !session[:ratings].nil?) || (params[:order].nil? && !session[:order].nil?))
+    if ((params[:ratings].nil? && !session[:ratings].nil?) || (params[:sort].nil? && !session[:sort].nil?))
       @ratings_to_show = Movie.all_ratings
       @movies = Movie.with_ratings(@ratings_to_show, session[:sort])
       session[:ratings] = params[:rating]
