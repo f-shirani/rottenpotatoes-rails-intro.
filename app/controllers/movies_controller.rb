@@ -18,18 +18,18 @@ class MoviesController < ApplicationController
     session[:ratings] = params[:ratings] unless params[:ratings].nil?
     session[:sort] = params[:sort] unless params[:sort].nil?
 
-  
     
-    #apply settings from session when the incoming URI doesn’t have params
-    if ((params[:ratings].nil? && !session[:ratings].nil?) || (params[:sort].nil? && !session[:sort].nil?))
+    #apply settings from session when the incoming URI doesn’t have params but have session
+    
+    if (params[:ratings].nil? && session[:ratings].nil?)
       @ratings_to_show = Movie.all_ratings
       @movies = Movie.with_ratings(@ratings_to_show, session[:sort])
       session[:ratings] = params[:rating]
       
-    #when URI has params, the new settings should be remembered in the session.
-    elsif (!params[:ratings].nil? || !params[:sort].nil?)
+    elsif (params[:ratings].nil? && !session[:ratings].nil?) || (params[:sort].nil? && !session[:sort].nil?)
       redirect_to movies_path("ratings" => session[:ratings], "sort" => session[:sort])
     
+    #when URI has params, the new settings should be remembered in the session.
     else
       if !params[:ratings].nil?
         ratings = params[:ratings].keys
@@ -37,15 +37,15 @@ class MoviesController < ApplicationController
         ratings = @all_ratings
       end
       if params[:sort] == 'title'
-         @sort_by =  params[:sort]
-         @highlight = 'title'
+        @sort_by =  params[:sort]
+        @highlight = 'title'
       elsif  params[:sort]=='release_date'
-         @sort_by =  params[:sort]
-         @highlight = 'release_date'
+        @sort_by =  params[:sort]
+        @highlight = 'release_date'
       else
-         @sort_by = ""
-         @ratings_to_show = ratings
-         @highlight = nil
+        @sort_by = ""
+        @ratings_to_show = ratings
+        @highlight = nil
       end
       
       @ratings_to_show = ratings
