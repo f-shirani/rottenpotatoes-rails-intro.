@@ -11,7 +11,7 @@
 class: 'form-check-input' %>
     </div>
   <% end %>
-  
+  <%= hidden_field_tag 'sort', @sort_by %>
   <%= submit_tag 'Refresh', id: 'ratings_submit', class: 'btn btn-primary' %>
 <% end %>
 
