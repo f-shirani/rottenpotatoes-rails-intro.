@@ -13,3 +13,9 @@
  *= require_tree .
  *= require_self
  */
+#movies .hilite {
+  background-color: yellow;
+}
+#filter input[type=checkbox]{
+  margin:0 0.84em 0 0;
+}
