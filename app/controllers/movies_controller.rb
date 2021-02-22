@@ -7,7 +7,21 @@ class MoviesController < ApplicationController
   end
 
   def index
-    ratings = params[:ratings]
+    # part1: sort the list of movies based on parameter
+    # @movies = Movie.order(params[:order])
+    
+    
+    # part2: 
+    # @all_ratings = ['G','PG','PG-13','R']
+    # if params[:ratings].nil?
+    #   @movies = Movie.order params[:order]
+    # else
+    #   # filter movies based on ratings
+    #   array_ratings = params[:ratings].keys
+    #   @chosen_ratings = array_ratings
+    #   @movies = Movie.where(rating: array_ratings).order params[:order]
+    
+    array_ratings = params[:ratings]
     @all_ratings = Movie.all_ratings
     
     # Remember the sorting and filtering settings
@@ -29,9 +43,9 @@ class MoviesController < ApplicationController
     
     else
       if !params[:ratings].nil?
-        ratings = params[:ratings].keys
+        array_ratings = params[:ratings].keys
       else
-        ratings = @all_ratings
+        array_ratings = @all_ratings
       end
       if sort_by == 'title'
         @sort_by = sort_by
@@ -41,11 +55,11 @@ class MoviesController < ApplicationController
         @highlight = 'release_date'
       else
         @sort_by = ""
-        @ratings_to_show = ratings
+        @ratings_to_show = array_ratings
         @highlight = nil
       end
       
-      @ratings_to_show = ratings
+      @ratings_to_show = array_ratings
       @movies = Movie.with_ratings(@ratings_to_show, @sort_by)
     
       
