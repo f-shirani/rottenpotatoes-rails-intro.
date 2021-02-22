@@ -27,7 +27,7 @@ class MoviesController < ApplicationController
       session[:ratings] = params[:rating]
       
     #when URI has params, the new settings should be remembered in the session.
-    elsif (params[:ratings].nil? && !session[:ratings].nil?) || (params[:sort].nil? && !session[:sort].nil?)
+    elsif (!params[:ratings].nil? || !params[:sort].nil?)
       redirect_to movies_path("ratings" => session[:ratings], "sort" => session[:sort])
     
     else
